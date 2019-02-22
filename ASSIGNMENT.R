@@ -48,20 +48,7 @@ ruleReturn<-function(retX, m, r){
   H<-Hold(rF)
   list("ER"=ER, "H"=H, "rhoF"=rF, "VF"=vF, "muF"=mF, "corXF"=rXF)
 }
-# retX: log asset return
-#m: long term MA 
-# r: short-term MA
-ruleReturn<-function(retX, m, r){
-  vX<-sd(retX)
-  mX<-mean(retX)
-  mF<-muF(d(m,r),retX)
-  vF<-sqrt(varF(d(m,r),retX))
-  rXF<-corXF(d(m,r),retX)
-  rF<-rhoF(d(m,r),retX)
-  ER<-sqrt(2/pi)*vX*rXF*exp(-mF*mF/(vF*vF))+mX*(1-2*pnorm(-mF/vF))
-  H<-Hold(rF)
-  list("ER"=ER, "H"=H, "rhoF"=rF, "VF"=vF, "muF"=mF, "corXF"=rXF)
-}
+
 
 #final results for 30 stocks
 all_mr <-NULL
@@ -74,10 +61,10 @@ for(stock in stocks) {
   r <- numeric(0)
   for (i in 2:11){
     for(j in (i+1):12){
-      if (j>1){
+      if (j>i){
         result <- c(result, ruleReturn(monthlyData, m = j, r = i)[[1]])
         m <- c(m,j)
-        r <- c(r,j)
+        r <- c(r,i)
       }
     }
   }
