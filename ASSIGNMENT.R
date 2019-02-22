@@ -81,3 +81,27 @@ colnames(all_mr) <- c("m", "r")
 all_mr
 
 #2)
+#cumulate returns
+returns <- NULL
+for(stock in stocks){
+  monthlyData <- monthlyReturn(get(stock), type="log")
+  returns <- cbind(returns, monthlyData)
+}
+#R^(EW)_1 = 1/30 \Sigma_i B_(i,t-1) *  r_(i,t)
+EW <- numeric(nrow(returns))
+for (i in 1:nrow(returns)){
+  EW[i] <- mean(returns[i,], na.rm=TRUE)
+}
+mean(EW)
+var(EW)
+
+#R_t^(RP) = \Sigma _i ^30 w_(i,t-1) * B_(i,t-1) *  r_(i,t)
+RP <- numeric(nrow(returns))
+std_devs=apply(returns, 2, sd, na.rm=TRUE)
+weights <- (1/std_devs)/(sum(1/std_devs))
+for(i in 1:nrow(returns)){
+  RP[i] <- sum(returns[i,] * weights, na.rm=TRUE)
+}
+mean(RP)
+var(RP)
+
