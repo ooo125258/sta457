@@ -91,7 +91,6 @@ for(stock in stocks) {
   stockAdjusted = dj30[[stock]][,paste(stock, ".Adjusted",sep="")]
   monthlyData = coredata(diff(log(apply.monthly(stockAdjusted, last))))
   monthlyData=na.omit(monthlyData)
-  monthlyReturn()
   #dj30 = new.env()
   #getSymbols(stocks, env=dj30, src="yahoo", from="1999-12-01", to="2018-11-30", adjust=TRUE)
   mData = coredata(monthlyData)
@@ -170,7 +169,8 @@ var(RP)
 
 perf_ew1 = ((12 * mean(EW) - 0.02) / (sqrt(12) * sqrt(var(EW))))
 perf_rp1 = ((12 * mean(RP) - 0.02) / (sqrt(12) * sqrt(var(RP))))
-
+perf_ew1
+perf_rp1
 
 #PART B QUESTION 1: 
   
