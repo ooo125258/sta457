@@ -139,11 +139,14 @@ performance
 
 #2)
 #cumulate returns
+#assume229 months
 returns <- NULL
 for(stock in stocks){
   stockAdjusted = dj30[[stock]][,paste(stock, ".Adjusted",sep="")]
   monthlyData = coredata(diff(log(apply.monthly(stockAdjusted, last))))
   monthlyData=na.omit(monthlyData)
+  na_fill = rep(NA,228-length(monthlyData))
+  monthlyData=c(na_fill, monthlyData)
   #monthlyData <- monthlyReturn(get(stock), type="log")
   returns <- cbind(returns, monthlyData)
 }
@@ -188,10 +191,10 @@ getSymbols(stocks, env=dj30_last5, src="yahoo", from="2014-01-01", to="2018-12-3
 returns_last5=c()
 sigmat <- c()
 for(stock in stocks){
-  #stockAdjusted = dj30_last5[[stock]][,paste(stock, ".Adjusted",sep="")]
+  stockAdjusted = dj30_last5[[stock]][,paste(stock, ".Adjusted",sep="")]
   #monthlyData = coredata(diff(log(apply.monthly(stockAdjusted, last))))
   #monthlyData=na.omit(monthlyData)
-  monthlyData <- monthlyReturn(get(stock), type="log")
+  monthlyData <- monthlyReturn(stockAdjusted, type="log")
   returns_last5 <- cbind(returns_last5, monthlyData)
 }
 delta<-0.2
@@ -264,4 +267,3 @@ perf_tsmom
 #Question changed:
 #The same as the 1st question.
 #The formula of ERT is in the discussion
-
