@@ -104,4 +104,3 @@ for(i in 1:nrow(returns)){
 }
 mean(RP)
 var(RP)
-
