@@ -105,3 +105,82 @@ for(i in 1:nrow(returns)){
 mean(RP)
 var(RP)
 
+PART B QUESTION 1: 
+  
+  #find delta 
+  f <- function(s) {
+    sum((1 - s)* s^{0:12}) - 1
+  }
+
+res <- optim(0.0001, f, lower = 0)
+delta <- res$par
+
+sigmat <- NULL
+
+#for all 30 stocks, compute its sigmat
+for(i in 1:30) {
+  
+  temp <- c()
+  
+  for(t in 14:nrow(returns)) {
+    
+    temp <- c(temp, 13 * sum((1 - delta)*delta^{0:12}*(returns[(t-1):(t-13),i] - sum(1 - delta^{0:12} * returns[(t-1):(t-13),i]))^2))
+    
+  }
+  
+  sigmat <- cbind(sigmat, sqrt(temp))
+}
+
+sigmat
+
+#QUESTION 2 
+#Predictive regression 
+#construct rs, t/sigma s, t-1 matrix
+
+rst_sigmast <- NULL
+
+for(i in 1:30) {
+  
+  rst_sigmast <- cbind(rst_sigmast, returns[14:nrow(returns),i]/sigmat[,i])
+  
+  
+}
+
+#find optimal h for all 30 stocks
+optimal_h_30 <- numeric(30)
+for(i in 1:30) {
+  
+  rh <- numeric(12)
+  for(h in 1:12) {
+    y <- rst_sigmast[(h+1):nrow(rst_sigmast),i]
+    x <- sign(returns[(h+1):nrow(rst_sigmast),i])
+    model <- lm(y ~ x)
+    rh[h] <- summary(model)$r.squared
+  }
+  optimal_h_30[i]<- (1:12)[which.max(rh)]
+}
+
+#optimal h for 30 stocks with highest R-square value
+names(optimal_h_30) <- stocks
+optimal_h_30
+
+#Question 3
+#TSMOM
+TSMOM <- numeric(nrow(returns) - 14)
+for(i in 14:(nrow(returns))) {
+  #weights
+  ws <- numeric(30)
+  for(j in 1:30) {
+    #assume hs = 12 for all stocks
+    ws[j] <- sign(returns[(i -12),j])* 40/100 * sigmat[i-13,j]
+  }
+  
+  TSMOM[i] <- 1/30 * sum(ws * returns[i,], na.rm = TRUE)
+}
+#performances mean and vavriance of TSMOM portfolio
+mean(TSMOM)
+var(TSMOM)
+
+
+#PARTC
+
