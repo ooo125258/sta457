@@ -82,7 +82,7 @@ colnames(all_mr) <- c("m", "r")
 all_mr
 
 
-
+'''
 ew_q2 = c()
 rp_q2 = c()
 counters = c()
@@ -108,7 +108,7 @@ for(stock in stocks) {
         }
         output
       }
-      else {print('t is smaller than m')}
+      else {print("t is smaller than m")}
     }
     #the realized return for daily data
     re <- numeric(0)
@@ -126,8 +126,9 @@ for(stock in stocks) {
 perf_ew = ((12 * mean(ew_q2) - 0.02) / (sqrt(12) * sqrt(var(ew_q2))))
 perf_rp = ((12 * mean(rp_q2) - 0.02) / (sqrt(12) * sqrt(var(rp_q2))))
 
-performance
-
+perf_ew
+perf_rp
+'''
 
 
 
@@ -192,9 +193,9 @@ returns_last5=c()
 sigmat <- c()
 for(stock in stocks){
   stockAdjusted = dj30_last5[[stock]][,paste(stock, ".Adjusted",sep="")]
-  #monthlyData = coredata(diff(log(apply.monthly(stockAdjusted, last))))
-  #monthlyData=na.omit(monthlyData)
-  monthlyData <- monthlyReturn(stockAdjusted, type="log")
+  monthlyData = coredata(diff(log(apply.monthly(stockAdjusted, last))))
+  monthlyData=na.omit(monthlyData)
+  #monthlyData <- monthlyReturn(stockAdjusted, type="log")
   returns_last5 <- cbind(returns_last5, monthlyData)
 }
 delta<-0.2
@@ -250,13 +251,13 @@ optimal_h_30
 TSMOM <- numeric(nrow(returns_last5) - 12)
 for(i in 13:(nrow(returns_last5))) {
   #weights
-  ws <- numeric(30)
+  weights <- numeric(30)
   for(j in 1:30) {
     #assume hs = 12 for all stocks
     weights[j] <- sign(returns_last5[(i -12),j])* 40/100 * sigmat[i-12,j]
   }
   
-  TSMOM[i] <- 1/30 * sum(weights * returns_last5[i,], na.rm = TRUE)
+  TSMOM[i] <- 1/30 * sum(weights * returns_last5[i,], na.rm = TRUE)#TODO: The first 12 months would be ZERO!!!!!
 }
 #performances mean and vavriance of TSMOM portfolio
 mean(TSMOM)
