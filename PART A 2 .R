@@ -26,3 +26,19 @@ for(i in 1:nrow(returns)) {
 
 mean(Rp)
 var(Rp)
+
+mean(RP)
+var(RP)
+
+perf_ew1 = ((12 * mean(EW) - 0.02) / (sqrt(12) * sqrt(var(EW))))
+perf_rp1 = ((12 * mean(RP) - 0.02) / (sqrt(12) * sqrt(var(RP))))
+perf_ew1
+perf_rp1
+
+#OBSERVATION AND EXPLANATION:
+#performance of equally weighted portfolio has a value of 0.4157, which is greater than delta= 0.02; 
+#furthermore, the risk parity portfolio has less volatility than the equally weighted portfolio. Due to
+#the fact that risk parity portfolio is well-diversified and it has low idiosyncratic risk than equally weighted
+#portfolio where market risk still exists. this is expected as risk parity seeks equal risk exposure from all assets 
+#in the portfolio, therefore, less weight is allocated to more risky asstes in comparison to equally weighted portfolio 
+#where equal weight of each asset is required.
