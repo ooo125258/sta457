@@ -139,10 +139,10 @@ perf_rp1
   #find delta with the formula provided:
 #\Sigma(1-\delta)\delta^i=1
   f <- function(s) {
-    sum((1 - s)* s^{0:260})
+    sum((1 - s)* s^{0:260}) -1
   }
 #Solve the delta
-res <- optim(1, f, lower = 0)
+res <- optim(0, f, lower = 0)
 delta <- res$par
 delta
 #OK, now we find the delta is unrealistic, as delta cannot be zero.(Or to say delta^i almost zero)
@@ -272,7 +272,7 @@ ERh <- function(h, m, r, retX) {
   }
   #return ER
   ER
-
+}
 #2) Find optimal h=12 period holding period return
 # for all 30 stocks
 
@@ -312,5 +312,7 @@ for(stock in 1:30) {
 row.names(all_mr2) <- stocks
 colnames(all_mr2) <- c("m", "r")
 #optimal m and r 
+#From the result, some of the result is the same as the first question.
+#That's correct, as some of the m and r are truly the optimal ones, in both of the questions!
 all_mr2
 
