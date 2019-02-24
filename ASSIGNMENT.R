@@ -241,7 +241,7 @@ for(i in 13:(nrow(returns_last5))) {
     B_st[j] <- sign(returns_last5[(i -12),j] )* 40/100 / sigmat[i-12,j]
   }
   #Still calculate TSMOM, with B * R. Remove the na
-  TSMOM[i] <-  1/30 * sum(B_st * returns[i,], na.rm = TRUE)
+  TSMOM[i] <-  1/30 * sum(B_st * returns_last5[i,], na.rm = TRUE)
 }
 
 #performances mean and vavriance of TSMOM portfolio
