@@ -88,7 +88,7 @@ all_mr_double_ma
 
 #2)
 #cumulate returns
-returns <- NULL
+returns_last5 <- NULL
 #In this question, I collect data from 5 years, 60 month period
 getSymbols(stocks, src="yahoo", from="2014-01-01", to="2018-12-31")
 
@@ -101,14 +101,14 @@ for(stock in stocks){
   #monthlyData=c(na_fill, monthlyData)
   #monthlyData <- monthlyReturn(dj30[[stock]][,paste(stock, ".Adjusted",sep="")], type="log")
   monthlyData<- monthlyReturn(get(stock), type="log")
-  returns <- cbind(returns, monthlyData)
+  returns_last5 <- cbind(returns_last5, monthlyData)
 }
 #R^(EW)_1 = 1/30 \Sigma_i B_(i,t-1) *  r_(i,t)
 #The formula of R_t^EW expression, the average of sum rulereturn
-EW <- numeric(nrow(returns))
-for (i in 1:nrow(returns)){
+EW <- numeric(nrow(returns_last5))
+for (i in 1:nrow(returns_last5)){
   #remove the na, for any exception.
-  EW[i] <- mean(returns[i,], na.rm=TRUE)
+  EW[i] <- mean(returns_last5[i,], na.rm=TRUE)
 }
 #show the result of EW
 mean(EW)
@@ -116,13 +116,13 @@ var(EW)
 
 #R_t^(RP) = \Sigma _i ^30 w_(i,t-1) * B_(i,t-1) *  r_(i,t)
 #The formula of R_t^RP expression, the average of weighted ruleReturn
-RP <- numeric(nrow(returns))
+RP <- numeric(nrow(returns_last5))
 #standard derivation of returns
-std_devs=apply(returns, 2, sd, na.rm=TRUE)
+std_devs=apply(returns_last5, 2, sd, na.rm=TRUE)
 #The thing before B
 weights <- (1/std_devs)/(sum(1/std_devs))
-for(i in 1:nrow(returns)){
-  RP[i] <- sum(returns[i,] * weights, na.rm=TRUE)
+for(i in 1:nrow(returns_last5)){
+  RP[i] <- sum(returns_last5[i,] * weights, na.rm=TRUE)
 }
 #Show the result of RP
 mean(RP)
@@ -238,7 +238,8 @@ for(i in 13:(nrow(returns_last5))) {
   B_st <- numeric(30)
   for(j in 1:30) {
   #assume hs = 12 for all stocks
-    B_st[j] <- sign(returns_last5[(i -12),j] )* 40/100 / sigmat[i-12,j]
+    B_st[j] <- sign(sum(returns_last5[(i-12):(i-1),j] ))* 40/100 / sigmat[i-12,j]
+    #B_st[j] <- sign(returns_last5[(i -12),j] )* 40/100 / sigmat[i-12,j]
   }
   #Still calculate TSMOM, with B * R. Remove the na
   TSMOM[i] <-  1/30 * sum(B_st * returns_last5[i,], na.rm = TRUE)
